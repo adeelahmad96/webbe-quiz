@@ -1,5 +1,5 @@
 import { MenuItem } from './entities/menu-item.entity';
-import { Repository } from "typeorm";
+import { getManager, Repository } from "typeorm";
 import App from "../../app";
 
 export class MenuItemsService {
@@ -86,6 +86,23 @@ export class MenuItemsService {
   */
 
   async getMenuItems() {
-    throw new Error('TODO in task 3');
+    const items = await getManager(MenuItem).query(`
+    SELECT JSON_OBJECT('items', JSON_ARRAYAGG(js)) results
+FROM (
+    SELECT JSON_OBJECT(
+        'id', p.id, 
+        'name', p.name, 
+        'parentId', p.parentId,
+        'children', JSON_ARRAYAGG(
+            JSON_OBJECT(
+                'id', p1.id, 
+                'name', p1.name, 
+                'parentId', p1.parentId
+            )
+        )
+    ) js
+    FROM MenuItem m
+    LEFT JOIN MenuItem m1 ON m.id = m1.parentId
+    `)
   }
 }
