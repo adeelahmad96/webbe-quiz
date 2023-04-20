@@ -103,6 +103,7 @@ FROM (
     ) js
     FROM MenuItem m
     LEFT JOIN MenuItem m1 ON m.id = m1.parentId
-    `)
+    `);
+    return items;
   }
 }
