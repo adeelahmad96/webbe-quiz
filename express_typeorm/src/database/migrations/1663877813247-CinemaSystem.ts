@@ -30,8 +30,31 @@ export class CinemaSystem1663877813247 implements MigrationInterface {
    * As a user I want to know where I'm sitting on my ticket
    * As a cinema owner I dont want to configure the seating for every show
    */
+
+
   public async up(queryRunner: QueryRunner): Promise<void> {
-    throw new Error('TODO: implement migration in task 4');
+   await queryRunner.manager.query(`
+   CREATE TABLE showRoom (
+    id uniqueIdentifier primaryKey,
+    name varchar(100)
+   );
+
+   CREATE TABLE movieShow (
+    id uniqueIdentifier primaryKey,
+    name varchar(100),
+    showTime dateTime,
+    showRoomId uniqueIdentifier,
+    price int
+   );
+
+   CREATE TABLE seats (
+    id int primaryKey,
+    seatNo int,
+    type varchar(100),
+    showRoomId uniqueIdentifier,
+   );
+
+   `)
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {}
