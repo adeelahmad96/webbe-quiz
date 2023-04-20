@@ -172,6 +172,12 @@ export class EventsService {
     ```
      */
   async getFutureEventWithWorkshops() {
-    throw new Error('TODO task 2');
+    const events = await getManager().query(`
+    select * from event as e join workshop as w on e.id = w.eventId
+    where w.start > CURDATE()
+    group by w.eventId
+    order by w.start
+    `);
+    return events
   }
 }
