@@ -1,6 +1,7 @@
-import { Repository } from 'typeorm';
+import { getManager, Repository } from 'typeorm';
 import { Event } from './entities/event.entity';
 import App from "../../app";
+import { Workshop } from './entities/workshop.entity';
 
 
 export class EventsService {
@@ -92,7 +93,16 @@ export class EventsService {
      */
 
   async getEventsWithWorkshops() {
-    throw new Error('TODO task 1');
+    const events = await getManager().find(Event);
+    const workshops = await getManager().find(Workshop);
+    const eventsWithWorkshops = events.map(event => {
+      const eventWorkshops = workshops.filter(Workshop => Workshop.eventId == event.id);
+      return {
+        ...event,
+        workshops: eventWorkshops
+      }
+    });
+    return eventsWithWorkshops
   }
 
   /* TODO: complete getFutureEventWithWorkshops so that it returns events with workshops, that have not yet started
